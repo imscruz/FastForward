@@ -1,15 +1,14 @@
 import BypassDefinition from './BypassDefinition.js'
 
 (async () => {
-  // Doğrulama başlat butonunu bul
+  // Find "DOGRULAMAYI BASLAT" button
   const btn = Array.from(document.querySelectorAll('a.btn-primary'))
     .find(el => el.textContent.includes("Doğrulamayı Başlat"));
   if (!btn) {
-    console.log("Doğrulamayı Başlat butonu bulunamadı.");
     return;
   }
 
-  // URL’den domain çıkarma fonksiyonu
+  // From the URL get domain only
   function extractDomainFromUrl(urlStr) {
     try {
       const url = new URL(urlStr);
@@ -32,13 +31,12 @@ import BypassDefinition from './BypassDefinition.js'
 
   const domain = extractDomainFromUrl(btn.href);
   if (!domain) {
-    console.log("Domain bulunamadı.");
     return;
   }
 
-  console.log("Bulunan domain:", domain);
+  console.log("Found:", domain);
 
-  // Fetch atma fonksiyonu (hedef domain içinde, content script ortamında çalışıyor)
+  // Sending Fetch on content mode cuz we dont want CORS
   async function doFetch(domain) {
     try {
       const res = await fetch(`https://${domain}/Backend/Process.php?type=Add`, {
@@ -60,13 +58,12 @@ import BypassDefinition from './BypassDefinition.js'
         credentials: "include"
       });
       const text = await res.text();
-      console.log(`Fetch başarıyla yapıldı: ${domain}`, text);
     } catch (e) {
-      console.error(`Fetch hatası (${domain}):`, e);
+      console.error(`Fetch err (${domain}):`, e);
     }
   }
 
-  // Domain ve www.domain için 4 saniye arayla fetch at
+  // with WWW version
   await doFetch(domain);
   setTimeout(() => doFetch(`www.${domain}`), 31);
 
