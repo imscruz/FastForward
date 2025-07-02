@@ -1,3 +1,5 @@
+import BypassDefinition from './BypassDefinition.js'
+
 (async () => {
   // Doğrulama başlat butonunu bul
   const btn = Array.from(document.querySelectorAll('a.btn-primary'))
